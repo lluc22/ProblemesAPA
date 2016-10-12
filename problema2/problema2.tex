@@ -9,13 +9,47 @@
 \usepackage[makeroom]{cancel}
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
+	
 
+\usepackage{xcolor}
+\usepackage{listings}
+
+\usepackage{xparse}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.2cm}
 
+\usepackage{color}
+\lstset{ %
+	language=R,                     % the language of the code
+	basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+	% will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code
+	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores
+	frame=single,                   % adds a frame around the code
+	rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+	tabsize=2,                      % sets default tabsize to 2 spaces
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	% also try caption instead of title
+	keywordstyle=\color{blue},      % keyword style
+	commentstyle=\color{dkgreen},   % comment style
+	stringstyle=\color{mauve},      % string literal style
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	morekeywords={*,...},
+	          % if you want to add more keywords to the set
+	alsoletter={.}        % if you want to add more keywords to the set
+} 
 
 
-\title{Problemes APA \\ Problema 6 Màxima versemblança 4}
+\title{Problemes APA \\ Problema 12: Clustering de les dades artificials de Cassini}
 \author{Lluc Bové}
 \date{Q1 2016-17}
 
@@ -23,78 +57,33 @@
 
 \maketitle
 
-La distribució de Bernoulli és una distribució binària sobre el fet que un esdeveniment tingui èxit (amb una certa probabilitat $p$) o fracassi (amb probabilitat $1-p$); la funció de probabilitat és:
+Volem analitzar un problema d'agrupament amb dades en 2D usant la rutina \lstinline{mlbench.cassini}. Generem dades en 3 grups amb el codi:\\
 
-\[ 
-P(X = x) =
- \begin{cases}
-	p & \text{si } x=1 \\
-	1 - p & \text{si } x=0 \\
-\end{cases}
-  \; ;p \in (0,1)
-\]
-
-On $x$ és el valor i $p$ el paràmetre de la Bernoulli. Considerem un experiment aleatori en què mesurem una determinada variable aleatòria $X$, que segueix una distribució de Bernoulli, cosa que escrivim $X \sim Ber(p)$. Prenem $N$ mesures independents de $X$ i obtenim una mostra aleatòria simple $\{x_1,\dots,x_N\}$, on cada $x_n$ és una realització de $X$, per $n = 1,\dots,N$. Noteu que la variable aleatòria $Y$ definida com "número d'èxits en la mostra" segueix la coneguda distribució binomial $Y \sim B(N,p)$. Es demana:
-\begin{enumerate}
-	\item\textbf{ Construïu la funció log-versemblança de la mostra.}\\
-	La funció de log-versemblança es construeix aplicant el logaritme a la funció de versemblança. La funció de versemblança es defineix:
+\begin{lstlisting}[frame=none,numbers=none]
+	library(mlbench)
 	
-	$\mathcal{L}(p)=\prod_{n=1}^{N} P(X;p) = \prod_{n=1}^{N}\left( p^{x_n} (1-p)^{1-x_n} \right)$
+	N <- 2000
 	
-	i la log-versemblança com a:
+	data.1 <- mlbench.cassini(N, relsize = c(1,1,0.25))
 	
-	$\ell (p) = \ln \mathcal{L}(p) = \ln \prod_{n=1}^{N}\left( p^{x_n}(1-p)^{1-x_n}\right) = \sum_{n=1}^{N}\left(\ln ( p^{x_n} (1-p)^{1-x_n})\right) $\\
-	$= \sum_{n=1}^{N}\left(x_n \ln(p) + (1 -x_n )\ln(1-p)\right) =\boxed{ \ln p \sum_{n=1}^{N} (x_n) + \ln (1-p) \sum_{n=1}^{N}( 1 -x_n)} $
-	
-	\item\textbf{ Trobeu l'estimador de màxima versemblança per $p$ a partir de la mostra i demostreu que realment és un màxim ( i no un extrem qualsevol).}\\
-	Hem de trobar $p$ tal que maximitzi la funció de log-versemblança, per tant hem de trobar:\\
-	
-	$\frac{d\ell}{dp} = \frac{1}{p} \sum_{n=1}^{N}(x_n) - \frac{1}{1-p}\left(N-\sum_{n=1}^{N} x_n\right)$
-	
-	i podem igualar a $0$ per tal de trobar el punt on hi ha l'extrem que busquem. Per simplificar direm que  $s =\sum_{n=1}^{N}x_n$ i per tant:\\
-	
-	$\frac{s}{p} - \frac{N-s}{1 - p} = \frac{s - Np}{(1-p)p} = 0$ 
-	$\implies p = \frac{t}{N} = \boxed{\frac{1}{N}\sum_{n=1}^{N}x_n}$
-	
-	Que podem veure que és la mitjana mostral. Ara hem de comprovar si és un extrem qualsevol o realment és un màxim. Per això hem de veure si la segona derivada al punt és estrictament menor que zero. És a dir:\\
-
-	$\frac{d^2\ell}{dp^2} = \frac{-s}{p^2} - \frac{N-s}{(1-p)^2}  $
-	
-	On $s = \sum_{n=1}^{N}x_n$ com abans. I quan fem que $p = \frac{s}{N}$ tenim que:
-	
-	$\frac{d^2\ell}{dp^2} \left(p=\frac{s}{N}\right) = \frac{-N^2}{s} - \frac{(N-s)}{(1-\frac{s}{N})^2}$
-	
-	Podem comprovar que això és estrictament menor que zero, ja que, el primer terme és negatiu ja que $s$ ha de ser positiu per definició, i $N$ també és positiu per definició i tot plegat està afectat per un signe negatiu; el segon terme també ho és ja que $N-s$ valdrà com a molt $0$ ja que el valor màxim del sumatori de les variables $x_n$ és $0$ perquè el valor de les $x_n$ és o bé $0$ o bé $1$(o bé èxit o bé fracàs), i $(1 - \frac{s}{N})^2$ també és positiu segur degut al quadrat. Com que tot està afectat per un signe negatiu aleshores segur que la segona derivada al punt és negativa i per tant podem confirmar que l'estimador és un màxim.
-		
-		
-	
-	\item\textbf{ Calculeu el seu biaix i la seva variança. Concluïu si aquest estimador és esbiaixat (o no) i consistent (o no). En cas que sigui esbiaixat, proposeu-ne un que corregeixi el biaix.}\\
-	
-	El biaix es defineix com a:
-	
-	$bias(\hat{p}) = \mathbb{E}(\hat{p}) - p$
-	
-	Calculem $\mathbb{E}(\hat{p})$:
-	
-	$\mathbb{E}(\hat{p}) = \mathbb{E}\left[\frac{1}{N}\sum_{n=1}^{N}x_n\right] = \frac{1}{N}\sum_{n=1}^{N}\mathbb{E}\left[x_n\right] = \frac{1}{N}\sum_{n=1}^{N} p = p $
-	
-	El primer pas de simplificació s'utilitzen les propietats del valor esperat, en el segon la definició d'esperança en una distribució de Bernoulli. Podem concloure que el biaix és $0$ i per tant l'estimador és no esbiaixat.
-	
-	Calculem la variança:
-	
-	$Var[\hat{p}] = Var\left[\frac{1}{N}\sum_{n=1}^{N}x_n\right] = \frac{1}{N^2}\sum_{n=1}^{N} Var\left[x_n\right] = \frac{1}{N^2}\sum_{n=1}^{N} (p (1-p)) = \boxed{\frac{p(1-p)}{N}}$
-	
-	Pel primer pas de simplificació usem propietats de la variança, podem treure la constant $\frac{1}{N}$ a fora de la variança si l'elevem al quadrat i també podem treure els sumatoris ja que les variables són independents entre elles. Aleshores usem la definició de la variança en una distribució de Bernoulli. Tenim doncs que l'estimador és consistent ja que el biaix és $0$ i la variança tendeix a $0$ quan la N tendeix a infinit.
-	
-	
-	\item\textbf{ Un amic (de poc fiar) ens mostra una moneda (amb cara i creu) i la llença 100 cops davant nostre. Surten 73 cares i 27 creus. Quin valor estimaríeu per $p$, la probabilitat de cara.}\\
-	
-	Usem aquí l'estimador que hem calculat anteriorment:\\\\
-	$\hat{p} = \frac{1}{N}\sum_{n=1}^{N}x_n = \frac{73}{100} = \boxed{0.73}$
-	
-	El sumatori de totes les $x_n$ és 73 ja que en l'èxit (cara) $x_n = 1$ i en el fracàs (creu) $x_n = 0$.
-\end{enumerate}
-
+	plot(data.1)
+\end{lstlisting}
+ 
+ Veiem que les estructures externes tenen forma de plàtan i entre elles hi ha un cercle amb menys densitat de dades. El \lstinline|plot| anterior mostr la veritat de les dades (els $3$ grups generats). Si ara fem:
+ 
+ \begin{lstlisting}[frame=none,numbers=none]
+plot(x=data.1$x[,1], y=data.1$x[,2])
+ \end{lstlisting}
+ 
+ Veurem les dades en brut (el que rebrà el mètode de \textit{clustering}). Es demana:
+ 
+ \begin{enumerate}
+ 	\item \textbf{ Decidiu per endavant quin mètode de \textit{clustering} hauria de treballar millor i amb quins paràmetres}
+ 	\item \textbf{Apliqueu k-means un cert nombre de vegades amb $k = 3$ i observeu els reultats}
+ 	\item \textbf{Apliqueu k-means amb una selecció de valors de k al vostre criteri (20 cops cadascun) i monitoritzeu l'índex de Calinski-Harabasz mitjà; quin k es veu millor?}
+ 	
+ 	\item \textbf{Apliqueu l'algorisme E-M amb una selecció de valors de k al vostre criteri (10 cops cadascun) i observeu els resultats. Comproveu els resultats contra les vostres expectatives (apartat 1).}
+ \end{enumerate}
 
 
 
