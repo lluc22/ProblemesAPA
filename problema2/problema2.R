@@ -75,6 +75,7 @@ found.clusters <- z@bestResult@partition
 plot(data.1$x[,1],data.1$x[,2],col=(found.clusters+1),xlab="",ylab="",main="E-M with k=3")
 
 
+
 ks <- c(2,5,10,50)
 
 
@@ -91,4 +92,6 @@ for (k in ks) {
   plot(data.1$x[,1],data.1$x[,2],col=(found.clusters+1),xlab="",ylab="",main=paste(c("E-M with k =",k),sep=" "))
   
 }
+
+# sum for k: Nk * || u_k - u || ^ 2
 
