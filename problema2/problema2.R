@@ -93,5 +93,9 @@ for (k in ks) {
   
 }
 
-# sum for k: Nk * || u_k - u || ^ 2
+CH <- function(mVar,m,centr,n){
+  
+}
 
+# sum for k: Nk * || u_k - u || ^ 2
+# sum(diag(matrix(unlist(z@bestResult@parameters@variance[1]),nrow=2,ncol=2)))
