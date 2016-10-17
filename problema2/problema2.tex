@@ -10,7 +10,7 @@
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
 	
-
+\usepackage{float}
 \usepackage{xcolor}
 \usepackage{listings}
 
@@ -48,7 +48,7 @@
 	alsoletter={.}        % if you want to add more keywords to the set
 } 
 
-
+\graphicspath{{images/}}
 \title{Problemes APA \\ Problema 12: Clustering de les dades artificials de Cassini}
 \author{Lluc Bové}
 \date{Q1 2016-17}
@@ -78,11 +78,65 @@ plot(x=data.1$x[,1], y=data.1$x[,2])
  Veurem les dades en brut (el que rebrà el mètode de \textit{clustering}). Es demana:
  
  \begin{enumerate}
- 	\item \textbf{ Decidiu per endavant quin mètode de \textit{clustering} hauria de treballar millor i amb quins paràmetres}
- 	\item \textbf{Apliqueu k-means un cert nombre de vegades amb $k = 3$ i observeu els reultats}
- 	\item \textbf{Apliqueu k-means amb una selecció de valors de k al vostre criteri (20 cops cadascun) i monitoritzeu l'índex de Calinski-Harabasz mitjà; quin k es veu millor?}
+ 	\item \textbf{ Decidiu per endavant quin mètode de \textit{clustering} hauria de treballar millor i amb quins paràmetres} \\
+ 	El millor mètode hauria de ser barreja de gaussianes, donat que k-means aquí no tindria resultat, ja que a simple vista es pot veure que no seria el cas de gaussianes esfèriques. Pel que fa la família de la gaussiana en qüestió, sabent com s'han generat les gaussianes podríem elegir usar la família diagonal ja que les variables són independents. Però com que assumim que no sabem la veritat sobre les dades usarem general com a família de gaussianes.
+
+ 	\item \textbf{Apliqueu k-means un cert nombre de vegades amb $k = 3$ i observeu els reultats}\\
+ 	Al aplicar k-means un cert nombre de vegades i quedant-nos amb la millor execució basant-nos en l'índex de \textit{Calinski-Harabasz } amb $k = 3$ ens trobem amb la següent partició:
+	 
+	\begin{figure}[H]
+	\centering
+ 	\includegraphics[scale=0.5]{3kmeans}
+	\end{figure}
+ 	Podem veure que no s'acosta gens a la partició original, el \textit{cluster} circular original fa que formi part de tots els \textit{clusters} nous. El resultat és l'esperat ja que les dades no estan generades per gaussianes esfèriques i per tant k-means no ajusta massa bé.
  	
- 	\item \textbf{Apliqueu l'algorisme E-M amb una selecció de valors de k al vostre criteri (10 cops cadascun) i observeu els resultats. Comproveu els resultats contra les vostres expectatives (apartat 1).}
+ 	\item \textbf{Apliqueu k-means amb una selecció de valors de k al vostre criteri (20 cops cadascun) i monitoritzeu l'índex de Calinski-Harabasz mitjà; quin k es veu millor?} \\
+    Usem valors de $k$ en l'interval $[2,10]$ i executem 20 cops per cada valor de $k$, trobem que la millor $k$ varia depenent de l'execució general, entre els valors $2$ i $5$. En aquest cas mostrem el gràfic d'evolució de l'index CH segons el valor de $k$, en que el cas millor és $k = 2$:
+    
+    	\begin{figure}[H]
+    	\centering
+    	\includegraphics[scale=0.5]{kmeansPerf}
+	    \end{figure}
+    
+    Veiem doncs que els valors més alts de $k$ són 2 i 5, i el més alt entre ells dos és 2. Mostrem doncs el \textit{clustering} amb $k = 2$.
+    
+    \begin{figure}[H]
+    	\centering
+    	\includegraphics[scale=0.5]{2kmeans}
+    \end{figure}
+
+ 	Segurament aquesta partició tingui un millor índex ja que es redueix la variància entre els \textit{clusters} i també la variància dins d'ells. Tot i això no és el que busquem, com es pot veure a simple vista, ja que ni tant sols la millor $k$ coincideix amb el nombre real de classes.
+ 	
+ 	\item \textbf{Apliqueu l'algorisme E-M amb una selecció de valors de k al vostre criteri (10 cops cadascun) i observeu els resultats. Comproveu els resultats contra les vostres expectatives (apartat 1).}\\
+ 	Apliquem E-M per valors de $k$ dins de l'interval $[2-5]$. Primer provem de mesurar l'índex CH per a tots els valors de $k$ i obtenim el següent gràfic:
+ 	
+ 	\begin{figure}[H]
+ 		\centering
+ 		\includegraphics[scale=0.5]{CHPerf}
+ 	\end{figure}
+ 
+   Podem veure com el millor valor de k és $5$. Això contradiu el que esperàvem ja que sabem que el nombre de \textit{clusters} és 3 i justament amb $k=3$ tenim el valor més baix de l'index mesurat. A més a més hauria d'ajustar millor amb els paràmetres de EM que hem elegit. Així doncs pensem que l'índex CH potser no és el més adequat per mesurar la qualitat de la partició de les nostres dades i per això provem el mateix experiment amb l'índex BIC(\textit{Bayesian information criterion}). Aquest índex es basa en la versemblança de la partició i com més baix és, més bona és aquesta. Obtenim el següent:
+   
+    \begin{figure}[H]
+   	\centering
+   	\includegraphics[scale=0.5]{BICPerf}
+   \end{figure}
+
+ Podem veure com tampoc és gaire bo l'índex pel que fa la decisió de $k$ ja que al augmentar-la aquest disminueix. Per tant la millor $k$ tampoc seria 3 com ja sabem que ha de ser. Així doncs creem un nou criteri per a trobar la qualitat de la partició, ens basem en la veritat de les dades. Aquest criteri no és realista ja que normalment no saps la partició a priori de les dades, però com que estem analitzant el comportament dels algorismes de \textit{clustering} farem veure que sabem a priori com és la partició. Així doncs anomenem aquest criteri \textit{diff} i expressa quants punts no "encaixen" en la partició vertadera. És a dir, actuaria com una diferència entre la partició original i la que trobem amb l'algorisme. Mesurem també l'index per a la selecció de $k$ i ho representem:
+ 
+  	\begin{figure}[H]
+ 	\centering
+ 	\includegraphics[scale=0.5]{DifPerf}
+ \end{figure}
+
+Aquí sí que es veu clarament com el millor valor de $k$ és 3. Sabent això executem unes quantes vegades l'algorisme EM amb $k=3$ i ens quedem amb la millor execució i podem observar el \textit{clustering} que veiem a continuació:
+
+ 	\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{diffResult}
+	\end{figure}
+ 
+Amb un bon nombre d'execucions hem pogut obtenir un \textit{clustering} que és igual al vertader, és a dir, s'ajusta a la perfecció. Amb tot això podem dir que si no tenim dades a priori sobre el nombre de \textit{clusters} que hem d'obtenir és molt complicat trobar un criteri que avaluï una partició concreta per poder optimitzar aquest nombre, i per tant, trobar quants \textit{clusters} hem de buscar i que a més a més sigui independent de com són les dades.
  \end{enumerate}
 
 
