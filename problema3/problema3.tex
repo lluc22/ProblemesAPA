@@ -1,0 +1,183 @@
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts}
+\usepackage[catalan]{babel} % Language 
+\usepackage{fontspec} 
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\usepackage{xparse}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.2cm}
+
+\usepackage{color}
+\lstset{ %
+	language=R,                     % the language of the code
+	basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+	% will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code
+	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores
+	frame=single,                   % adds a frame around the code
+	rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+	tabsize=2,                      % sets default tabsize to 2 spaces
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	% also try caption instead of title
+	keywordstyle=\color{blue},      % keyword style
+	commentstyle=\color{dkgreen},   % comment style
+	stringstyle=\color{mauve},      % string literal style
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	morekeywords={*,...},
+	          % if you want to add more keywords to the set
+	alsoletter={.}        % if you want to add more keywords to the set
+} 
+
+\graphicspath{{images/}}
+\DeclareMathOperator{\diag}{diag}
+
+\title{Problemes APA \\ Problema 4: Propietats elàstiques d'una molla}
+\author{Lluc Bové}
+\date{Q1 2016-17}
+
+\begin{document}
+
+\maketitle
+
+Volem determinar les propietats elàstiques d'una molla usant diferents pesos i mesurant la deformació que es produeix. La llei de Hooke realciona la longitud $l$ i la força $F$ que exerceix el pes com:\\
+$$
+e + kF = l
+$$
+on $e$, $k$ són constants de la llei, que es volen determinar. S'ha realitzat un experiment i obtingut les dades:\\
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llllll}
+	F & 1    & 2    & 3    & 4    & 5    \\
+	\hline
+	l & 7.97 & 10.2 & 14.2 & 16.0 & 21.2 \\
+\end{tabular}
+\end{table}
+
+\begin{enumerate}
+	\item\textbf{Plantajeu el problema com un problema de mínims quadrats} \\
+	Hem de predir $l$ en funció de $F$ per tant tenim que la seva relació és estocàstica de la forma següent:
+	$$
+	l = f(F) + \epsilon
+	$$
+	On \epsilon és una variable aleatòria. Volem donar un model que té la forma següent:
+	$$
+	y(F;w) = w^T * \phi(F)
+	$$
+	On $w$ és un vector de coeficients i $\phi$ el vector de les funcions de base. Hem de trobar doncs el vector $w$ que faci que l'error quadràtic sigui mínim(En el nostre cas concret $e$ i $k$). És a dir hem de resoldre el següent:
+	$$
+	\min_{w} \parallel l - \Phi w \parallel ^2
+	$$
+	On $\Phi$ és la matriu de disseny. Per tant en el nostre cas concret tenim les següents dades:
+	$$
+	\Phi = 
+	\begin{pmatrix}
+	1 & 1 \\
+	1 & 2 \\
+	1 & 3 \\
+	1 & 4 \\
+	1 & 5 \\
+	\end{pmatrix}
+	\qquad
+	l =
+	\begin{pmatrix}
+	7.97 \\
+	10.2 \\
+	14.2 \\
+	16.0 \\
+	21.2 \\
+	\end{pmatrix}
+	\qquad
+	w =
+	\begin{pmatrix}
+	e \\
+	k \\
+	\end{pmatrix}
+	$$
+	\newpage
+	\item\textbf{Resoleu-lo amb el mètode de la matriu pseudo-inversa}
+	Si el rang de la matriu és complet, aleshores podem assegurar que la solució de mínims quadrats és única i es calcula de la següent manera:
+	$$
+	w = (\Phi^T\Phi)^{-1}\Phi^Tl
+	$$
+	Podem veure com realment el rank de la matriu és complet ja que les seves columnes són linealment independents. Amb R calculem $w$ resolent directament l'equació i trobem que:
+	$$
+	w=
+	\begin{pmatrix}
+	e=4.234\\
+	k=3.226\\
+	\end{pmatrix}
+	$$
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.4]{model.png}
+		\caption{El gràfic representa el model (recta) respecte les seves dades (punts)}
+	\end{figure}
+
+	\item\textbf{Resoleu-lo amb el mètode basat en la SVD} \\
+	Ara resolem el problema utilitzant la descomposició SVD. Tota matriu es pot expressar com a:
+	
+	$$
+	\Phi_{n\times m} = U_{n\times m}\Delta_{n \times m} V_{m \times m}
+	$$
+	
+	 On $U$ conté els vector propis de $\Phi \Phi^T$, $V$ conté tots els vector propis de $\Phi^T\Phi$ i $\Delta$ és una matriu quasi-diagonal on la diagonal conté les arrels quadrades dels valors propis de la matriu $\Phi^T \Phi$.
+	 
+	 Es pot afirmar que donat un problema de mínims quadrats la solució es pot trobar de la següent manera:
+	 
+	 $$
+	 w = V \diag_+ \left( \frac{1}{\lambda_i} \right)U^T
+	 $$
+	 
+	 On $\lambda_i$ són els valors de la diagonal de $\Delta$ i on $\diag_+$ és la matriu diagonal on els valors de $\lambda_i$ que no són més grans que zero valen 0. La nostre descomposició SVD és la següent:
+	 $$
+	 U =
+	 \begin{pmatrix}
+		 0.1600071 & 0.7578903 \\
+		 0.2853078 & 0.4675462 \\
+		 0.4106086 & 0.1772020 \\
+		 0.5359094 &-0.1131421 \\
+		 0.6612102 &-0.4034862 \\
+	 \end{pmatrix}
+	 \qquad
+	 \Delta =
+	 \begin{pmatrix} 
+		 7.691213 & 0.0000000 \\
+		 0.000000 & 0.9193696 \\
+	 \end{pmatrix}
+	 \qquad
+	  V =
+	 \begin{pmatrix}
+	 0.2669336 & 0.9637149 \\
+	 0.9637149 & -0.2669336 \\
+	 \end{pmatrix}
+	 \qquad
+	 $$
+	 Resolem amb $R$\footnote{Tot el codi de la resolució es troba al fitxer $script.R$ adjunt } i ens n'adonem que la solució és la mateixa que en l'apartat anterior, és a dir $e = 4.234$ i $k = 3.226$. Per tant tenim que en el nostre cas tenim que el model és:
+	 $$
+	 y(F) = 4.234 + 3.226 F
+	 $$
+
+	 
+	
+\end{enumerate}
+
+
+
+\end{document}
