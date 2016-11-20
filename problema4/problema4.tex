@@ -27,13 +27,77 @@ La companyia farmacèutica \textit{Nice Pills} ha construit una cinta transporta
 	
 	\item\textbf{Quina és la probabilitat d'error si no s'utilitza el color per classificar?}\\
 		
-		
+	La probabilitat d'error si no s'utilitza el color per classificar és el que té la regla de classificació següent:
+	
+	$$
+	R_1 =
+	\begin{cases}
+	  C_1 \quad \text{si } P(C_1) > P(C_2) \\
+	  C_2 \quad \text{si } P(C_1) < P(C_2)
+	\end{cases}
+	$$	
+	
+	En aquest cas és triar sempre $C_2$ per tant la probabilitat d'error és $C_1$ és a dir \boxed{\frac{1}{3}}
 	
 	\item\textbf{ Calcular les probabilitats $P(yellow)$ i $P(white)$ i les probabilitats $P(C_1|yellow)$,$P(C_2| yellow)$,$P(C_1 | white)$ i $P(C_2 | white)$} \\
 	
+	Calculem les probabilitats de $yellow$ i $white$ usant la llei de probabilitat total:
+	$$
+	P(yellow) = P(yellow | C_1) P(C_1) + P(yellow | C_2) P(C_2) = \frac{1}{5}\times\frac{1}{3} + \frac{2}{3}\times\frac{2}{3} = \boxed{\frac{23}{45}}
+	$$
+	$$
+	P(white) = 1 - P(yellow) = 1 - \frac{23}{45} = \boxed{\frac{22}{45}} 
+	$$
+	
+	Usem la fórmula de Bayes per calcular la resta de probabilitats:
+	
+	$$
+	P(C_1 | yellow) = \frac{P(C_1)P(yellow | C_1)}{P(yellow)} = \frac{\frac{1}{3}\times \frac{1}{5}}{\frac{23}{45}} = \boxed{\frac{3}{23}}
+	$$
+	$$
+	P(C_2 | yellow) = 1  - P(C_1 | yellow) = 1 - \frac{3}{23} = \boxed{\frac{20}{23}}
+	$$
+	$$
+	P(C_1 | white) = \frac{P(C_1)P(white | C_1)}{P(white)} = \frac{\frac{1}{3}\times \frac{4}{5}}{\frac{22}{45}} = \boxed{\frac{6}{11}}
+	$$
+	$$
+	P(C_2 | white) = 1 - P(C_1 | white) = 1 - \frac{6}{11} = \boxed{\frac{5}{11}}
+	$$
+	
 	\item\textbf{ Quina és la decisió òptima per pastilles \textit{yellow}? I per pastilles \textit{white}? Quins són els \textit{odds} en ambdós casos?}\\
 	
-	\item\textbf{Quina és la probabilitat d'error si s'utilitza el color per classificar? Per què és millor que la de l'apartat 1?}
+	 La regla de decisió òptima depenent del color, que l'anomenem regla de Bayes, és la següent:
+	$$
+	R_{bayes} =
+	\begin{cases}
+	C_1 \quad \text{si } P(C_1 | x) > P(C_2 | x) \\
+	C_2 \quad \text{si } P(C_1 | x) < P(C_2 | x)
+	\end{cases}
+	$$	
+	On $x$ és el color.
+	
+	Per tant si tenim que $x = \textit{yellow}$ aleshores la millor regla de decisió és triar $C_2$ ja que $P(C_1 | yellow) < P(C_2 | yellow)$ i els odds són de:
+	
+	$$
+	\textit{odds} = \frac{P(yellow | C_1) P(C_1)}{P(yellow | C_2) P(C_2)} = \frac{\frac{1}{5} \times \frac{1}{3}}{\frac{2}{3} \times \frac{2}{3}} = \boxed{\frac{3}{20}}
+	$$
+	
+	Però si tenim que $x = \text{white}$ aleshores la millor regla de decisió és escollir $C_1$ ja que $P(C_1 | white) > P(C_2 | white)$ i els odds són de:
+	$$
+	\textit{odds} = \frac{P(white | C_1) P(C_1)}{P(white | C_2) P(C_2)} = \frac{\frac{4}{5} \times \frac{1}{3}}{\frac{1}{3} \times \frac{2}{3}} = \boxed{\frac{6}{5}}
+	$$
+	
+	\item\textbf{Quina és la probabilitat d'error si s'utilitza el color per classificar? Per què és millor que la de l'apartat 1?}\\
+	
+	La probabilitat d'error és el de la regla de Bayes, per tant tenim que:
+	
+	$$P(Error_{R_{Bayes}} | x) = \min\{P(C_1 | x),P(C_2 | x)\}$$
+	
+	I la probabilitat d'error total és:
+	
+	$$
+	E()
+	$$
 
 \end{enumerate}
 
