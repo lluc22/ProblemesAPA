@@ -8,7 +8,6 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
-
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.2cm}
 
@@ -39,7 +38,7 @@ La companyia farmacèutica \textit{Nice Pills} ha construit una cinta transporta
 	
 	En aquest cas és triar sempre $C_2$ per tant la probabilitat d'error és $C_1$ és a dir \boxed{\frac{1}{3}}
 	
-	\item\textbf{ Calcular les probabilitats $P(yellow)$ i $P(white)$ i les probabilitats $P(C_1|yellow)$,$P(C_2| yellow)$,$P(C_1 | white)$ i $P(C_2 | white)$} \\
+	\item\textbf{ Calcular les probabilitats $\boldsymbol{P(yellow)}$ i $\boldsymbol{P(white)}$ i les probabilitats $\boldsymbol{P(C_1|yellow)}$, $\boldsymbol{P(C_2| yellow)}$, $\boldsymbol{P(C_1 | white)}$ i $\boldsymbol{P(C_2 | white)}$} \\
 	
 	Calculem les probabilitats de $yellow$ i $white$ usant la llei de probabilitat total:
 	$$
@@ -89,15 +88,20 @@ La companyia farmacèutica \textit{Nice Pills} ha construit una cinta transporta
 	
 	\item\textbf{Quina és la probabilitat d'error si s'utilitza el color per classificar? Per què és millor que la de l'apartat 1?}\\
 	
-	La probabilitat d'error és el de la regla de Bayes, per tant tenim que:
+	La probabilitat d'error és la de la regla de Bayes, per tant tenim que:
 	
 	$$P(Error_{R_{Bayes}} | x) = \min\{P(C_1 | x),P(C_2 | x)\}$$
 	
 	I la probabilitat d'error total és:
 	
-	$$
-	E()
-	$$
+	\begin{align*}
+	&\mathbf{E}(P(Error_{R_{Bayes}}) | x) = \sum_{x \in {\{\textit{yellow,white}}\}} \min \{P(C_1 | x) , P(C_2 | x)\} P(x) =\\\\
+	& \min \{ P(C_1 | yellow) , P(C_2 | yellow)\} P(yellow)  + \min\{ P(C_1 | white) , P(C_2 | white) \} P(white) = \\\\
+	& P(C_1 | yellow) P(yellow) + P(C_2 | white) P(white) = \frac{3}{23} \times \frac{23}{45} + \frac{5}{11} \times \frac{22}{45} = \boxed{\frac{13}{45}}
+	\end{align*}
+	
+	Podem veure doncs que aquesta probabilitat d'error és menor que la de l'altra regla, per tant és millor. De fet això passa en general. Es pot demostrar que la regla de Bayes és la millor de classificació entre les que usen $P(C_1 | x)$ i $P(C_2 | x)$.
+
 
 \end{enumerate}
 
