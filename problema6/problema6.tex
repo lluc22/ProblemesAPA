@@ -1,0 +1,95 @@
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts}
+\usepackage[catalan]{babel} % Language 
+\usepackage{fontspec} 
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.2cm}
+
+
+
+\title{Problemes APA \\ Problema 5: Kernel polinòmic}
+\author{Lluc Bové}
+\date{Q1 2016-17}
+
+\begin{document}
+
+\maketitle
+
+
+Considereu el kernel polinòmic $k(x,x') = (\langle x,x' \rangle + 1)^q, q \in \mathbb{N}, x,x' \in \mathbb{R}^d$. Feu el "truc del kernel" (expressió de $k$ com un producte escalar) per $d = 2$ i $q = 3$ i doneu explícitament la funció \phi en aquest cas. Quina és la dimensió del "feature space" a on porta \phi?
+\\
+Diem  $x$ i $y$ a $x$, i $x'$ per simplicitat:
+$
+x = 
+\begin{pmatrix}
+x_1 \\
+x_2 \\
+\end{pmatrix}
+y= 
+\begin{pmatrix}
+y_1 \\
+y_2
+\end{pmatrix}
+$
+
+\begin{align*}
+	k(x,y) =& ((x_1y_1 + x_2y_2) + 1) ^3 = (x_1y_1 +x_2y_2)^3 + 3(x_1y_1 +x_2y_2)^2 +3(x_1y_1 +x_2y_2) + 1\\
+	=&x_1^3y_1^3 + 3x_1^2y_1^2x_2y_2 + 3x_1y_1x_2^2y_2^2 + x_2^3y_2^3 + 3x_1^2y_1^2 + 6x_1y_1x_2y_2 +  \\ &3x_2^2y_2^2 + 3x_1y_1 + 3x_2y_2 + 1 \\
+	=&\begin{pmatrix}
+	x_1^3 \\
+	x_2^3 \\
+	\sqrt{3}x_1^2x_2 \\
+	\sqrt{3}x_1x_2^2 \\
+	\sqrt{3}x_1^2 \\
+	\sqrt{3}x_2^2 \\
+	\sqrt{6} x_1x_2\\
+	\sqrt{3}x_1\\
+	\sqrt{3}x_2\\
+	1
+	\end{pmatrix}
+	\begin{pmatrix}
+	y_1^3 \\
+	y_2^3 \\
+	\sqrt{3}y_1^2y_2 \\
+	\sqrt{3}y_1y_2^2 \\
+	\sqrt{3}y_1^2 \\
+	\sqrt{3}y_2^2 \\
+	\sqrt{6} y_1y_2\\
+	\sqrt{3}y_1\\
+	\sqrt{3}y_2\\
+	1
+	\end{pmatrix}
+	= \phi(x)\phi(y)
+\end{align*}
+
+On $\phi(x)$ per a qualsevol $x \in \mathbb{R}^2$ és:
+$$
+\phi: \mathbb{R}^2 \rightarrow \mathbb{R}^{10}
+\quad
+\phi(x)  =\begin{pmatrix}
+x_1^3 \\
+x_2^3 \\
+\sqrt{3}x_1^2x_2 \\
+\sqrt{3}x_1x_2^2 \\
+\sqrt{3}x_1^2 \\
+\sqrt{3}x_2^2 \\
+\sqrt{6} x_1x_2\\
+\sqrt{3}x_1\\
+\sqrt{3}x_2\\
+1
+\end{pmatrix}
+$$
+
+I per tant la dimensió del feature space on la funció de kernel calcula el producte escalar és 10.
+
+
+
+
+\end{document}
